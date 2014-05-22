@@ -37,7 +37,7 @@ exports.showUrl = function(req, res) {
   var key = req.params.key;
   findByKey(key, function(item){
     if (item){
-      res.send(item);
+      res.send({url: item.url, key: item.key});
     }
     else {
       res.send({'error':'Url not found'});
@@ -60,7 +60,11 @@ exports.create = function(req, res) {
         res.send({'error':'An error has occurred'});
       }
       else {
-        res.send({url: result[0].url, key: result[0].key});
+        res.setHeader("cache-control", "no-cache, no-store, max-age=0, must-revalidate");
+        res.setHeader("pragma", "no-cache");
+        res.setHeader("location", "/show/" + result[0].key);
+        res.status(301);
+        res.send(result[0]);
       }
     });
   });

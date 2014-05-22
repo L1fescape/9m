@@ -1,5 +1,4 @@
 var
-
   // expressjs
   express = require('express'),
   app = express(),
@@ -16,17 +15,14 @@ var
   settings = require('./settings');
 
 // parse application/json and application/x-www-form-urlencoded
-app.use(bodyParser())
-// static pages and content. app dir is in a parent level directory, so we need
-// to reference that
-var dir = __dirname.split("/");
-dir.pop();
-app.use(express.static(dir.join("/") + "/static"));
+app.use(bodyParser());
+// serve static files
+app.use(express.static(__dirname + "/static"));
 
 // options for all routes
 app.options("*", function(req, res) {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, sessionID');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.end();
 });
 

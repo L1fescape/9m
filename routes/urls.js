@@ -5,15 +5,15 @@ var db = require('../db'),
 
 function findByKey(key, callback){
   db.collection(settings.mongo.coll, function(err, collection) {
-      collection.findOne({'key': key}, function(err, item) {
-        if (!err) {
-          callback(item);
-        }
-        else {
-          console.log(err);
-          callback(null);
-        }
-      });
+    collection.findOne({'key': key}, function(err, item) {
+      if (!err) {
+        callback(item);
+      }
+      else {
+        console.log(err);
+        callback(null);
+      }
+    });
   });
 }
 
@@ -36,10 +36,20 @@ function buildLink(key){
   return link;
 }
 
+function updateHits(key){
+  db.collection(settings.mongo.coll, function(err, collection) {
+    collection.update({'key': key}, {$inc : {hits : 1 }}, function(err, item) {});
+  });
+}
+
+    
+
+
 exports.redirectUrl = function(req, res) {
   var key = req.params.key;
   findByKey(key, function(item){
     if (item){
+      updateHits(key);
       res.setHeader("cache-control", "no-cache, no-store, max-age=0, must-revalidate");
       res.setHeader("pragma", "no-cache");
       res.setHeader("location", "http://" + item.url);
@@ -60,6 +70,7 @@ exports.showUrl = function(req, res) {
       res.send({
         url: item.url, 
         key: item.key,
+        hits: item.hits,
         link: link
       });
     }
@@ -78,17 +89,25 @@ exports.create = function(req, res) {
   var key = generateKey();
   db.collection(settings.mongo.coll, function(err, collection) {
     // todo check for duplicate key
-    collection.insert({url: url, key: key}, {safe:true}, function(err, result) {
+    console.log(key);
+    collection.insert({url: url, key: key, hits: 0}, {safe:true}, function(err, result) {
       if (err){
         console.log(err);
         res.send({'error':'An error has occurred'});
       }
       else {
+        var item = result[0];
         res.setHeader("cache-control", "no-cache, no-store, max-age=0, must-revalidate");
         res.setHeader("pragma", "no-cache");
-        res.setHeader("location", "/show/" + result[0].key);
+        res.setHeader("location", "/show/" + item.key);
         res.status(301);
-        res.send(result[0]);
+        var link = buildLink(item.key);
+        res.send({
+          url: item.url, 
+          key: item.key,
+          hits: item.hits,
+          link: link
+        });
       }
     });
   });

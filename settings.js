@@ -2,6 +2,7 @@ module.exports = {
   web : {
     host : '0.0.0.0',
     port : 4000,
+    // optional
     proxyHost : 'localhost',
     proxyPort : 4040
   },

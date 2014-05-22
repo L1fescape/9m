@@ -4,17 +4,36 @@ var db = require('../db'),
   settings = require('../settings');
 
 function findByKey(key, callback){
-    db.collection(settings.mongo.coll, function(err, collection) {
-        collection.findOne({'key': key}, function(err, item) {
-          if (!err) {
-            callback(item);
-          }
-          else {
-            console.log(err);
-            callback(null);
-          }
-        });
-    });
+  db.collection(settings.mongo.coll, function(err, collection) {
+      collection.findOne({'key': key}, function(err, item) {
+        if (!err) {
+          callback(item);
+        }
+        else {
+          console.log(err);
+          callback(null);
+        }
+      });
+  });
+}
+
+// todo: rewrite this function. it is shit.
+function buildLink(key){
+  var link = 'http://';
+  if (settings.web.host){
+    link += (settings.web.proxyHost) ? settings.web.proxyHost : settings.web.host;
+  }
+  else {
+    link += 'localhost';
+  }
+
+  if (settings.web.port){
+    link += ':';
+    link += (settings.web.proxyPort) ? settings.web.proxyPort : settings.web.port;
+  }
+
+  link += '/' + key;
+  return link;
 }
 
 exports.redirectUrl = function(req, res) {
@@ -37,7 +56,12 @@ exports.showUrl = function(req, res) {
   var key = req.params.key;
   findByKey(key, function(item){
     if (item){
-      res.send({url: item.url, key: item.key});
+      var link = buildLink(item.key);
+      res.send({
+        url: item.url, 
+        key: item.key,
+        link: link
+      });
     }
     else {
       res.send({'error':'Url not found'});

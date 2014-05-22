@@ -32,5 +32,5 @@ app.get('/show/:key', urls.showUrl);
 app.post('/create', urls.create);
 
 // run http server
-httpServer.listen(settings.web.port);
-console.log('Listening on', settings.web.port);
+httpServer.listen(settings.web.port, settings.web.host);
+console.log('Listening on', settings.web.host + ':' + settings.web.port);

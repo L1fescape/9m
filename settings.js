@@ -1,11 +1,14 @@
 module.exports = {
   web : {
-    port : 4000
+    host : '0.0.0.0',
+    port : 4000,
+    proxyHost : 'localhost',
+    proxyPort : 4040
   },
   mongo : {
-    host : "localhost",
+    host : 'localhost',
     port : 27017,
-    db : "9mdb",
-    coll : "urls"
+    db : '9mdb',
+    coll : 'urls'
   }
 };

@@ -15,24 +15,24 @@ var
   // import settings
   settings = require('./settings');
 
-// configure express
 // parse application/json and application/x-www-form-urlencoded
 app.use(bodyParser())
 // static pages and content. app dir is in a parent level directory, so we need
 // to reference that
 var dir = __dirname.split("/");
 dir.pop();
-app.use(express.static(dir.join("/") + "/dist"));
+app.use(express.static(dir.join("/") + "/static"));
 
 // options for all routes
 app.options("*", function(req, res) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, sessionID');
-    res.end();
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, sessionID');
+  res.end();
 });
 
 // API Routes
-app.get('/:key', urls.findByKey);
+app.get('/:key', urls.redirectUrl);
+app.get('/show/:key', urls.showUrl);
 app.post('/create', urls.create);
 
 // run http server

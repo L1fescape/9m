@@ -1,18 +1,17 @@
 {
   "name": "9m-node",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Andrew Kennedy",
   "license": "ISC",
   "dependencies": {
     "express": "^4.3.0",
     "mongodb": "^1.4.5",
     "lodash": "^2.4.1",
-    "request": "^2.36.0",
     "body-parser": "^1.2.0",
     "utf8": "^2.0.0"
   }
